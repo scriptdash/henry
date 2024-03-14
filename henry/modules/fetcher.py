@@ -40,7 +40,10 @@ class Fetcher:
         self.save = options.save
         self.quiet = options.quiet
         self.sdk = self.configure_sdk(
-            options.config_file, options.section, options.timeout
+            config_file=options.config_file,
+            section=options.section,
+            env_prefix=options.env_prefix,
+            timeout=options.timeout,
         )
         self._verify_api_credentials()
 
@@ -48,12 +51,13 @@ class Fetcher:
         self,
         config_file: str,
         section: str,
+        env_prefix: str,
         timeout: Optional[int],
     ) -> methods.Looker40SDK:
         """Instantiates and returns a LookerSDK object and overrides default timeout if
         specified by user.
         """
-        settings = api_settings.ApiSettings(filename=config_file, section=section)
+        settings = api_settings.ApiSettings(filename=config_file, section=section, env_prefix=env_prefix)
         user_agent_tag = f"Henry v{pkg.__version__}: cmd={self.cmd}, sid={uuid.uuid1()}"
         settings.headers = {
             "Content-Type": "application/json",
@@ -424,6 +428,7 @@ class Input(NamedTuple):
     limit: Optional[Sequence[int]] = None
     config_file: str = "looker.ini"
     section: str = "Looker"
+    env_prefix: str = "LOOKERSDK"
     quiet: bool = False
     save: Optional[bool] = False
     timeout: Optional[int] = 120
