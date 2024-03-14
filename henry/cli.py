@@ -19,7 +19,7 @@ def main():
     elif user_input.command == "vacuum":
         vacuum.Vacuum.run(user_input)
     else:
-        parser.error()
+        parser.error(f"Unknown or missing user input.")
 
 
 def setup_cli():
